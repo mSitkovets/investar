@@ -13,15 +13,24 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.celebrating{
+  width: 100%;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+}
+
+h2{
+  text-align: left;
+  padding: 2em;
+  color: #534695;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+}
+
+p{
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+}
+
+.total{
+  margin: 0 40px 0 40px;
 }
 
 .App-link {
