@@ -32,7 +32,7 @@ CREATE TABLE portfolios(
    portfolio_id SERIAL PRIMARY KEY,
    totalValue DOUBLE PRECISION,
    user_id INT REFERENCES users ON DELETE CASCADE,
-   date TIMESTAMPTZ NOT NULL
+   date DATE NOT NULL
 );
 
 -- demo user who starts with $1000 in their wallet
