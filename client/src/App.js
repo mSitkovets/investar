@@ -7,28 +7,22 @@ import Summary from './Summary.js';
 import Nav from './Nav.js';
 import StockSummary from './StockSummary.js';
 
-import BuyModal from './components/BuyModal';
-import ModalBuy from './components/ModalBuy';
 import giveaway from './giveaway.svg';
 import logotype from './logotype.png';
 import buy from './buy.svg';
 import sell from './sell.svg';
 
 
+
 import { Modal, InputGroup, Container, Row, Col, Navbar, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-  // const [showBuyModal, setShowBuyModal] = useState(false);
   const [stockResult, setStockResult] = useState();
   const [userStocks, setUserStocks] = useState([]);
   const [wallet, setWallet] = useState();
   const [todayProfit, setTodayProfit] = useState();
-  const [buyModal, setBuyModal] = useState(false);
   let currentBalance;
-
-  const hideModalHandler = () => { setBuyModal(false) };
-  const showModalHandler = () => { setBuyModal(true) };
 
   useEffect(() => {
     async function fetchData() {
@@ -88,7 +82,7 @@ function App() {
             method: 'PUT',
             body: JSON.stringify({
               name,
-              numShares: data[0].numshares + 5,
+              numShares: data[0].numshares + 1,
               boughtValue: price
             }),
             headers: {
@@ -108,7 +102,7 @@ function App() {
             method: "POST",
             body: JSON.stringify({
               name,
-              numShares: 5,
+              numShares: 1,
               boughtValue: price
             }),
             headers: {
@@ -124,7 +118,7 @@ function App() {
       }
 
       try {
-        const newBalance = Math.round((wallet - 5 * price) * 100) / 100;
+        const newBalance = (wallet - price);
         if (newBalance >= 0) {
           const walletResponse = await fetch(`http://localhost:5000/wallets/`, {
             method: 'PUT',
@@ -156,7 +150,7 @@ function App() {
         method: 'PUT',
         body: JSON.stringify({
           name,
-          numShares: numShares - 2,
+          numShares: numShares - 1,
         }),
         headers: {
           'Content-Type': "application/json; charset=UTF-8"
@@ -218,7 +212,7 @@ function App() {
         })
         currentBalance = Math.round((currentBalance + (company[0].regularMarketPrice) * stock[1]) * 100) / 100;
       })
-      currentBalance = currentBalance - prevDayBalance;
+      currentBalance = Math.round((currentBalance - prevDayBalance) * 100) / 100;
 
       setTodayProfit(currentBalance)
     } catch (error) {
@@ -227,9 +221,10 @@ function App() {
 
   }
   return (
-    <>{stockResult && todayProfit &&
+    // {stockResult && todayProfit &&
+    <>
       <div className="App">
-        <Navbar bg="light" variant="light">
+        {/* <Navbar bg="light" variant="light">
           <Navbar.Brand href="#home">
             <img src={logotype} alt="Investar logo" />
           </Navbar.Brand>
@@ -237,7 +232,7 @@ function App() {
             <Nav.Link href="#index">Home</Nav.Link>
             <Nav.Link href="#dictionary">Dictionary</Nav.Link>
           </Nav>
-        </Navbar>
+        </Navbar> */}
 
         <Container>
           <Row>
@@ -261,8 +256,6 @@ function App() {
             </Col>
           </Row>
         </Container>
-
-        <p>graph goes here</p>
 
         <Container>
           <Row>
@@ -290,10 +283,7 @@ function App() {
                     <div key={index}>
                       <li>${name}</li>
                       <li>${stockData.regularMarketPrice} </li>
-                      {/* <div onHover={() => setBuyModal(true)}> buy</div> */}
-                      {/* <Button onClick={showModalHandler()}>Buy!</Button> */}
-                      {/* <button className="button-default" onClick={toggle}>Show Modal</button> */}
-                      {/* <BuyModal wallet={wallet} setWallet={setWallet} showBuyModal={showBuyModal} setShowBuyModal={setShowBuyModal} name={name} price={stockData.regularMarketPrice} /> */}
+                      <Button onClick={() => buyStockHandler(name, stockData.regularMarketPrice)}>Buy!</Button>
                     </div>
                   )
                 })}
@@ -320,7 +310,7 @@ function App() {
           </Row>
         </Container>
 
-      </div>}</>
+      </div></>
   );
 }
 
