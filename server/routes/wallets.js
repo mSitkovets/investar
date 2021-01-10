@@ -5,7 +5,6 @@ const pool = require("../db")
 router.get("/", async (req, res) => {
     try {
         const wallet = await pool.query("SELECT * from wallets WHERE user_id = 1")
-        console.log(wallet)
         res.status(200).json(wallet)
     } catch (err) {
         console.error(err.message)

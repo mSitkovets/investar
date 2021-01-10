@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import logo from './logo.png';
+import yourstocks from './yourstocks.svg';
 import './App.css';
 
 import Summary from './Summary.js';
@@ -12,7 +13,8 @@ import logotype from './logotype.png';
 import buy from './buy.svg';
 import sell from './sell.svg';
 
-import { Modal, InputGroup, Container, Row, Col } from 'react-bootstrap';
+
+import { Modal, InputGroup, Container, Row, Col, Navbar, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -223,98 +225,98 @@ function App() {
 
   }
   return (
-    <>{stockResult && todayProfit && <div className="App">
-      <Navbar bg="light" variant="light">
-        <Navbar.Brand href="#home">
-          <img src={logotype} alt="Investar logo" />
-        </Navbar.Brand>
-        <Nav className="mr-auto">
-          <Nav.Link href="#index">Home</Nav.Link>
-          <Nav.Link href="#dictionary">Dictionary</Nav.Link>
-        </Nav>
-      </Navbar>
+    <>{stockResult && todayProfit &&
+      <div className="App">
+        <Navbar bg="light" variant="light">
+          <Navbar.Brand href="#home">
+            <img src={logotype} alt="Investar logo" />
+          </Navbar.Brand>
+          <Nav className="mr-auto">
+            <Nav.Link href="#index">Home</Nav.Link>
+            <Nav.Link href="#dictionary">Dictionary</Nav.Link>
+          </Nav>
+        </Navbar>
 
-      <Container>
-        <Row>
-          <Col><h2>Hello, fellow star! 👋</h2></Col>
-        </Row>
-      </Container>
+        <Container>
+          <Row>
+            <Col><h2>Hello, fellow star! 👋</h2></Col>
+          </Row>
+        </Container>
 
-      <Container>
-        <Row>
-          <Col xs={4}><img src={giveaway} class="celebrating" alt="Illustration of girl celebrating!" /></Col>
-          <Col class="total">
+        <Container>
+          <Row>
+            <Col xs={4}><img src={giveaway} class="celebrating" alt="Illustration of girl celebrating!" /></Col>
+            <Col class="total">
 
-            <p>Your stock portfolio total is <br></br><h1>${wallet}</h1></p>
-          </Col>
-          <Col class="profit">
-            <p>Today you made <br></br><h1>${todayProfit}</h1></p>
-          </Col>
-          <Col class="rate">
+              <p>Your stock portfolio total is <br></br><h1>${wallet}</h1></p>
+            </Col>
+            <Col class="profit">
+              <p>Today you made <br></br><h1>${todayProfit}</h1></p>
+            </Col>
+            <Col class="rate">
 
-            <p>Which means your return rate is <br></br><h1>4.3%</h1></p>
-          </Col>
-        </Row>
-      </Container>
+              <p>Which means your return rate is <br></br><h1>4.3%</h1></p>
+            </Col>
+          </Row>
+        </Container>
 
-      <p>graph goes here</p>
+        <p>graph goes here</p>
 
-      <Container>
-        <Row>
+        <Container>
+          <Row>
 
-          <Col><img src={yourstocks} />Your stocks!
+            <Col><img src={yourstocks} />Your stocks!
             <ul>
-              {userStocks.map((stock, index) => {
-                console.log(stock)
-                return (
-                  <div key={index}>
-                    <li>${stock[0]} {stock[1]} shares</li>
-                    <p>message</p>
-                  </div>
-                )
-              })}
-            </ul>
-          </Col>
+                {userStocks.map((stock, index) => {
+                  console.log(stock)
+                  return (
+                    <div key={index}>
+                      <li>${stock[0]} {stock[1]} shares</li>
+                      <p>message</p>
+                    </div>
+                  )
+                })}
+              </ul>
+            </Col>
 
-          <Col><img src={buy} />Buy
+            <Col><img src={buy} />Buy
           <p>You have a ${wallet} balance. If you want more money, you can sell some shares!</p>
-            <ul>
-              {stockResult.map((stockData, index) => {
-                let name = `${stockData.symbol}(${stockData.longName})`
-                return (
-                  <div key={index}>
-                    <li>${name}</li>
-                    <li>${stockData.regularMarketPrice} </li>
-                    {/* <Button onClick={() => { buyStockHandler(name, stockData.regularMarketPrice) }} >Buy!</Button> */}
-                    <Button onClick={setShowBuyModal(true)} >Buy!</Button>
-                    <BuyModal wallet={wallet} setWallet={setWallet} showBuyModal={showBuyModal} setShowBuyModal={setShowBuyModal} name={name} price={stockData.regularMarketPrice} />
-                  </div>
-                )
-              })}
-            </ul>
+              <ul>
+                {stockResult.map((stockData, index) => {
+                  let name = `${stockData.symbol}(${stockData.longName})`
+                  return (
+                    <div key={index}>
+                      <li>${name}</li>
+                      <li>${stockData.regularMarketPrice} </li>
+                      {/* <Button onClick={setShowBuyModal(true)} >Buy!</Button> */}
+                      {/* <BuyModal wallet={wallet} setWallet={setWallet} showBuyModal={showBuyModal} setShowBuyModal={setShowBuyModal} name={name} price={stockData.regularMarketPrice} /> */}
+                    </div>
+                  )
+                })}
+              </ul>
 
-          </Col>
+            </Col>
 
-          <Col><img src={sell} />Sell
+            <Col><img src={sell} />Sell
           <p>Want to lock-in your profit? Or not feeling super hopeful about a company? Then sell!</p>
-            <ul>
-              {userStocks.map((stock, index) => {
-                console.log(stock)
-                return (
-                  <div key={index}>
-                    <li>${stock[0]}</li>
-                    <li>${stock[1]} </li>
-                    <Button onClick={() => { sellStockHandler(stock[0], stock[1]) }}>Sell!</Button>
-                  </div>
-                )
-              })}
-            </ul>
+              <ul>
+                {userStocks.map((stock, index) => {
+                  console.log(stock)
+                  return (
+                    <div key={index}>
+                      <li>${stock[0]}</li>
+                      <li>${stock[1]} </li>
+                      <Button onClick={() => { sellStockHandler(stock[0], stock[1]) }}>Sell!</Button>
+                    </div>
+                  )
+                })}
+              </ul>
 
-          </Col>
-        </Row>
-      </Container>
+            </Col>
+          </Row>
+        </Container>
 
-    </div>}</>
+      </div>}</>
   );
 }
 
