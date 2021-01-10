@@ -2,21 +2,30 @@ import React, { useState, useEffect } from 'react';
 import logo from './logo.png';
 import './App.css';
 
+import Summary from './Summary.js';
+import Nav from './Nav.js';
+import StockSummary from './StockSummary.js';
+
+import BuyModal from './components/BuyModal';
 import giveaway from './giveaway.svg';
 import logotype from './logotype.png';
 import buy from './buy.svg';
 import sell from './sell.svg';
-import yourstocks from './yourstocks.svg';
 
-import { Navbar, Nav, Container, Row, Col, Button } from 'react-bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import { Modal, InputGroup, Container, Row, Col } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
+  const [showBuyModal, setShowBuyModal] = useState(false);
   const [stockResult, setStockResult] = useState();
   const [userStocks, setUserStocks] = useState([]);
   const [wallet, setWallet] = useState();
   const [todayProfit, setTodayProfit] = useState();
   let currentBalance;
+
+  const handleShowBuyModal = () => setShowBuyModal(true);
+  const handleCloseBuyModal = () => setShowBuyModal(false);
+
   useEffect(() => {
     async function fetchData() {
       const data = await getData();
@@ -276,7 +285,9 @@ function App() {
                   <div key={index}>
                     <li>${name}</li>
                     <li>${stockData.regularMarketPrice} </li>
-                    <Button onClick={() => { buyStockHandler(name, stockData.regularMarketPrice) }} >Buy!</Button>
+                    {/* <Button onClick={() => { buyStockHandler(name, stockData.regularMarketPrice) }} >Buy!</Button> */}
+                    <Button onClick={setShowBuyModal(true)} >Buy!</Button>
+                    <BuyModal wallet={wallet} setWallet={setWallet} showBuyModal={showBuyModal} setShowBuyModal={setShowBuyModal} name={name} price={stockData.regularMarketPrice} />
                   </div>
                 )
               })}
@@ -302,7 +313,6 @@ function App() {
           </Col>
         </Row>
       </Container>
-
 
     </div>}</>
   );
