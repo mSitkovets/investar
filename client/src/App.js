@@ -8,6 +8,7 @@ import Nav from './Nav.js';
 import StockSummary from './StockSummary.js';
 
 import BuyModal from './components/BuyModal';
+import ModalBuy from './components/ModalBuy';
 import giveaway from './giveaway.svg';
 import logotype from './logotype.png';
 import buy from './buy.svg';
@@ -18,15 +19,16 @@ import { Modal, InputGroup, Container, Row, Col, Navbar, Button } from 'react-bo
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-  const [showBuyModal, setShowBuyModal] = useState(false);
+  // const [showBuyModal, setShowBuyModal] = useState(false);
   const [stockResult, setStockResult] = useState();
   const [userStocks, setUserStocks] = useState([]);
   const [wallet, setWallet] = useState();
   const [todayProfit, setTodayProfit] = useState();
+  const [buyModal, setBuyModal] = useState(false);
   let currentBalance;
 
-  const handleShowBuyModal = () => setShowBuyModal(true);
-  const handleCloseBuyModal = () => setShowBuyModal(false);
+  const hideModalHandler = () => { setBuyModal(false) };
+  const showModalHandler = () => { setBuyModal(true) };
 
   useEffect(() => {
     async function fetchData() {
@@ -288,7 +290,9 @@ function App() {
                     <div key={index}>
                       <li>${name}</li>
                       <li>${stockData.regularMarketPrice} </li>
-                      {/* <Button onClick={setShowBuyModal(true)} >Buy!</Button> */}
+                      {/* <div onHover={() => setBuyModal(true)}> buy</div> */}
+                      {/* <Button onClick={showModalHandler()}>Buy!</Button> */}
+                      {/* <button className="button-default" onClick={toggle}>Show Modal</button> */}
                       {/* <BuyModal wallet={wallet} setWallet={setWallet} showBuyModal={showBuyModal} setShowBuyModal={setShowBuyModal} name={name} price={stockData.regularMarketPrice} /> */}
                     </div>
                   )
