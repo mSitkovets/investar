@@ -14,6 +14,7 @@ app.use(express.json());
 
 app.use('/stocks', require('./routes/stocks'));
 app.use('/wallets', require('./routes/wallets'));
+app.use('/portfolios', require('./routes/portfolios'));
 
 app.listen(5000, () => {
     console.log(`Server is running on port 5000`);

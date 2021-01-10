@@ -15,13 +15,21 @@ function App() {
   const [stockResult, setStockResult] = useState();
   const [userStocks, setUserStocks] = useState([]);
   const [wallet, setWallet] = useState();
+  const [todayProfit, setTodayProfit] = useState();
+  let currentBalance;
   useEffect(() => {
-    getData();
+    async function fetchData() {
+      const data = await getData();
+      getProfit(data.quoteResponse.result);
+      setStockResult(data.quoteResponse.result);
+    }
+    fetchData();
     async function fetchStocks() {
       const stocks = await getStocks();
       setUserStocks(stocks)
     }
-    fetchStocks()
+    fetchStocks();
+
   }, []);
 
   const getData = async () => {
@@ -36,8 +44,8 @@ function App() {
       const data = await response.json();
       const walletResponse = await fetch("http://localhost:5000/wallets")
       const walletdata = await walletResponse.json();
-      setWallet(walletdata.rows[0].balance)
-      setStockResult(data.quoteResponse.result)
+      setWallet(walletdata.rows[0].balance);
+      return data;
     } catch (error) {
       console.log(error)
     }
@@ -131,17 +139,6 @@ function App() {
 
   const sellStockHandler = async (name, numShares) => {
     try {
-      const companySymbol = name.substr(0, name.indexOf('('));
-      const apiResponse = await fetch(`https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-quotes?region=CA&symbols=${companySymbol}`, {
-        method: 'GET',
-        headers: {
-          "x-rapidapi-key": "bf8b1d549amshedfc95df35cd085p1e256bjsn56aa957d4900",
-          "x-rapidapi-host": "apidojo-yahoo-finance-v1.p.rapidapi.com"
-        }
-      })
-      const data = await apiResponse.json();
-      let companyValue = data.quoteResponse.result[0].regularMarketPrice;
-
       const stockResponse = await fetch(`http://localhost:5000/stocks/sell`, {
         method: 'PUT',
         body: JSON.stringify({
@@ -158,31 +155,66 @@ function App() {
     } catch (error) {
       console.error(error.message)
     }
-    // try {
-    //   const newBalance = wallet + (price * numShares);
-    //   if (newBalance >= 0) {
-    //     const walletResponse = await fetch(`http://localhost:5000/wallets/`, {
-    //       method: 'PUT',
-    //       body: JSON.stringify({
-    //         balance: newBalance
-    //       }),
-    //       headers: {
-    //         'Content-Type': "application/json; charset=UTF-8"
-    //       }
-    //     })
-    //     setWallet(newBalance);
-    //   } else {
-    //     console.log("You no longer have balance, would you like to restart?");
-    //     alert("You no longer have balance, would you like to restart?");
-    //   }
-    // }
-    // catch (error) {
-    //   console.log(error.message)
-    // }
+    const companySymbol = name.substr(0, name.indexOf('('));
+    const apiResponse = await fetch(`https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-quotes?region=CA&symbols=${companySymbol}`, {
+      method: 'GET',
+      headers: {
+        "x-rapidapi-key": "bf8b1d549amshedfc95df35cd085p1e256bjsn56aa957d4900",
+        "x-rapidapi-host": "apidojo-yahoo-finance-v1.p.rapidapi.com"
+      }
+    })
+    const data = await apiResponse.json();
+    let companyValue = data.quoteResponse.result[0].regularMarketPrice;
+
+
+    try {
+
+      const newBalance = Math.round((wallet + (companyValue * numShares)) * 100) / 100;;
+
+      if (newBalance >= 0) {
+        const walletResponse = await fetch(`http://localhost:5000/wallets/`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            balance: newBalance
+          }),
+          headers: {
+            'Content-Type': "application/json; charset=UTF-8"
+          }
+        })
+        setWallet(newBalance);
+      } else {
+        console.log("You no longer have balance, would you like to restart?");
+        alert("You no longer have balance, would you like to restart?");
+      }
+    }
+    catch (error) {
+      console.log(error.message)
+    }
   }
 
+  const getProfit = async (apiResult) => {
+    try {
+      const prevDayBalanceResponse = await fetch(`http://localhost:5000/portfolios`);
+      const prevDayBalance = await prevDayBalanceResponse.json();
+      currentBalance = wallet;
+      console.log(apiResult);
+      userStocks.map(stock => {
+        const companySymbol = stock[0].substr(0, stock[0].indexOf('('));
+        const company = apiResult.filter(result => {
+          return result.symbol === companySymbol
+        })
+        currentBalance = Math.round((currentBalance + (company[0].regularMarketPrice) * stock[1]) * 100) / 100;
+      })
+      currentBalance = currentBalance - prevDayBalance;
+
+      setTodayProfit(currentBalance)
+    } catch (error) {
+      console.error(error.message);
+    }
+
+  }
   return (
-    <>{stockResult && <div className="App">
+    <>{stockResult && todayProfit && <div className="App">
       <Navbar bg="light" variant="light">
         <Navbar.Brand href="#home">
           <img src={logotype} alt="Investar logo" />
@@ -207,7 +239,7 @@ function App() {
             <p>Your stock portfolio total is <br></br><h1>${wallet}</h1></p>
           </Col>
           <Col class="profit">
-            <p>Today you made <br></br><h1>$120</h1></p>
+            <p>Today you made <br></br><h1>${todayProfit}</h1></p>
           </Col>
           <Col class="rate">
 
@@ -236,7 +268,7 @@ function App() {
           </Col>
 
           <Col><img src={buy} />Buy
-          <p>You have a $170 balance. If you want more money, you can sell some shares!</p>
+          <p>You have a ${wallet} balance. If you want more money, you can sell some shares!</p>
             <ul>
               {stockResult.map((stockData, index) => {
                 let name = `${stockData.symbol}(${stockData.longName})`
