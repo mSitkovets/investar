@@ -7,10 +7,51 @@
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+ul{
+  list-style-type: none;
+  text-align: left;
+}
+
+.graph{
+  margin: 3em 0 3em 0;
+}
+
+.buyButton{
+  margin: 15px 0 15px 0;
+  background-color: #EBA9AF;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+  padding: 5px 30px 5px 30px;
+  border: 0px;
+  border-radius: 40px;
+  color: #534595;
+}
+
+.sellButton{
+  margin: 15px 0 15px 0;
+  background-color: #FADE90;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+  padding: 5px 30px 5px 30px;
+  border: 0px;
+  border-radius: 40px;
+  color: #534595;
+}
+
+.stockSummary{
+  background-color:#FDF8F9;
+  border-radius: 40px;
+  margin: 0.5em;
+}
+
+.buySummary{
+  background-color:#FDF8F9;
+  border-radius: 40px;
+  margin: 0.5em;
+}
+
+.sellSummary{
+  background-color:#FDF8F9;
+  border-radius: 40px;
+  margin: 0.5em;
 }
 
 .celebrating{
@@ -18,23 +59,82 @@
   justify-content: center;
 }
 
-h2{
-  text-align: left;
-  padding: 2em;
-  color: #534695;
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+h1{
+  color: #534695 !important;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif !important;
+  padding-top:10px;
 }
 
-p{
+h2{
+  text-align: left;
+  padding: 2em !important;
+  color: #534695 !important;
+  font-weight: 600 !important;
+  font-family: "Gill Sans", "Gill Sans MT" !important;
+}
+
+h3{
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif !important;
+  color: #534695 !important;
+  font-weight: bold !important;
+  padding-bottom: 10px !important;
+}
+
+.img{
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+
+p, ul, li{
   font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+  font-size: 16px;
+}
+
+.update{
+  text-align: center;
+  font-style: italic;
+  color: #534595;
+  margin-bottom: 35px;
+  font-size: 16px;
+  font-family: "Gill Sans Semibold", "Gill Sans MT", Calibri, sans-serif;
+}
+
+.ticker{
+  text-align: center;
+  font-size: 20px;
+  color: #534595;
 }
 
 .total{
-  margin: 0 40px 0 40px;
+  margin: 3em 1em 3em 1em;
+  color: #534595;
+  padding-top: 3em;
+  border-radius: 50px;
+  background-color: #EBA9AF;
+}
+
+.profit{
+  margin: 3em 1em 3em 1em;
+  color: #534595;
+  padding-top: 3em;
+  border-radius: 50px;
+  background-color: #F8F7FB;
+}
+
+.rate{
+  color: #534595;
+  margin: 3em 1em 3em 1em;
+  padding-top: 3em;
+  border-radius: 50px;
+  background-color: #FADE90;
 }
 
 .App-link {
   color: #61dafb;
+}
+
+footer{
+  margin-top: 4em;
 }
 
 @keyframes App-logo-spin {
@@ -44,4 +144,26 @@ p{
   to {
     transform: rotate(360deg);
   }
+}
+
+.popup {  
+  position: fixed;  
+  width: 100%;  
+  height: 100%;  
+  top: 0;  
+  left: 0;  
+  right: 0;  
+  bottom: 0;  
+  margin: auto;  
+  background-color: rgba(0,0,0, 0.5);  
+}  
+.popup\_inner {  
+  position: absolute;  
+  left: 25%;  
+  right: 25%;  
+  top: 25%;  
+  bottom: 25%;  
+  margin: auto;  
+  border-radius: 20px;  
+  background: white;  
 }
