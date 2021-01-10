@@ -54,13 +54,24 @@ router.post("/buy", async (req, res) => {
     }
 })
 
-// sell the stock
+// get all user stocks stock
+router.get("/", async (req, res) => {
+    try {
+        const stock = await pool.query("SELECT name, numShares FROM stocks WHERE user_id = 1");
+        res.json(stock.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+})
+
 router.put("/sell", async (req, res) => {
     try {
+        console.log(req.body)
         const name = req.body.name;
-        const numShares = req.body.numShares;
+        const numShares = parseInt(req.body.numShares);
         const stock = await pool.query(
-            "UPDATE stocks SET numShares = $1 WHERE name = $1",
+            "UPDATE stocks SET numShares = $1::integer WHERE name = $2 AND user_id = 1",
             [numShares, name]
         );
         res.json(stock.rows);

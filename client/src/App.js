@@ -12,10 +12,15 @@ import { Navbar, Nav, Container, Row, Col, Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 function App() {
-  // const [query, setQuery] = useState("")
   const [stockResult, setStockResult] = useState();
+  const [userStocks, setUserStocks] = useState([]);
   useEffect(() => {
     getData();
+    async function fetchStocks(){
+      const stocks = await getStocks();
+      setUserStocks(stocks)
+    }
+    fetchStocks()
   }, []);
 
   const getData = async () => {
@@ -28,12 +33,25 @@ function App() {
         }
       })
       const data = await response.json();
-      console.log(data.quoteResponse.result);
       setStockResult(data.quoteResponse.result)
     } catch (error) {
       console.log(error)
     }
   }
+
+  const getStocks = async () => {
+    try {
+      const stockResponse = await fetch("http://localhost:5000/stocks/")
+      const stockData = await stockResponse.json();
+      const stocks_info = stockData.reduce((stocks_info, stock) => [...stocks_info, [stock["name"], stock["numshares"]]],[])
+      console.log(stocks_info);
+      return stocks_info
+      // setStockResult(stocks_info);
+    } catch (error) {
+      console.error(error.message)
+    }
+  }
+
   const buyStockHandler = async (name, price) => {
     try {
       console.log("buy stock")
@@ -98,6 +116,27 @@ function App() {
 
     }
   }
+
+  const sellStockHandler = async (name, numShares) => {
+    try {
+      const stockResponse = await fetch(`http://localhost:5000/stocks/sell`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          name,
+          numShares: numShares - 2,
+        }),
+        headers: {
+          'Content-Type': "application/json; charset=UTF-8"
+        }
+
+      })
+      const stockData = await stockResponse.json();
+      console.log(stockData);
+    } catch (error) {
+      console.error(error.message)
+    }
+  }
+
   return (
     <>{stockResult && <div className="App">
       <Navbar bg="light" variant="light">
@@ -138,18 +177,32 @@ function App() {
       <Container>
         <Row>
 
-          <Col><img src={yourstocks} />Your stocks!</Col>
+          <Col><img src={yourstocks} />Your stocks!
+            <ul>
+              {userStocks.map((stock, index) => {
+                console.log(stock)
+                  return(
+                    <div key={index}>
+                      <li>${stock[0]} {stock[1]} shares</li>
+                      <p>message</p>
+                    </div>
+                  )
+                })}
+              </ul>
+          </Col>
 
           <Col><img src={buy} />Buy
           <p>You have a $170 balance. If you want more money, you can sell some shares!</p>
             <ul>
-              {stockResult.map(stockData => {
+              {stockResult.map((stockData, index) => {
                 let name = `${stockData.symbol}(${stockData.longName})`
-                return <>
-                  <li>${name}</li>
-                  <li>${stockData.regularMarketPrice} </li>
-                  <Button onClick={() => { buyStockHandler(name, stockData.regularMarketPrice) }} >Buy!</Button>
-                </>
+                return(
+                  <div key={index}>
+                    <li>${name}</li>
+                    <li>${stockData.regularMarketPrice} </li>
+                    <Button onClick={() => { buyStockHandler(name, stockData.regularMarketPrice) }} >Buy!</Button>
+                  </div>
+                )
               })}
             </ul>
 
@@ -158,25 +211,16 @@ function App() {
           <Col><img src={sell} />Sell
           <p>Want to lock-in your profit? Or not feeling super hopeful about a company? Then sell!</p>
             <ul>
-              <li>$TSLA (Tesla)</li>
-              <li>15 shares</li>
-              <Button>Sell!</Button>
-
-              <li>$BNS (Scotiabank)</li>
-              <li>7 shares</li>
-              <Button>Sell!</Button>
-
-              <li>$CM (CIBC)</li>
-              <li>14 shares</li>
-              <Button>Sell!</Button>
-
-              <li>$TD (TD Bank)</li>
-              <li>4 shares</li>
-              <Button>Sell!</Button>
-
-              <li>$ACN (Accenture)</li>
-              <li>1 share</li>
-              <Button>Sell!</Button>
+            {userStocks.map((stock, index) => {
+              console.log(stock)
+                return(
+                  <div key={index}>
+                    <li>${stock[0]}</li>
+                    <li>${stock[1]} </li>
+                    <Button onClick={() => { sellStockHandler(stock[0], stock[1]) }}>Sell!</Button>
+                  </div>
+                )
+              })}
             </ul>
 
           </Col>
