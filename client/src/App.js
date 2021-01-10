@@ -13,11 +13,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 function App() {
   const [stockResult, setStockResult] = useState();
-<<<<<<< HEAD
   const [userStocks, setUserStocks] = useState([]);
-=======
   const [wallet, setWallet] = useState();
->>>>>>> b869fb7108c87522a8cbb4100342609b167635e0
   useEffect(() => {
     getData();
     async function fetchStocks(){
@@ -37,12 +34,9 @@ function App() {
         }
       })
       const data = await response.json();
-<<<<<<< HEAD
-=======
       const walletResponse = await fetch("http://localhost:5000/wallets")
       const walletdata = await walletResponse.json();
       setWallet(walletdata.rows[0].balance)
->>>>>>> b869fb7108c87522a8cbb4100342609b167635e0
       setStockResult(data.quoteResponse.result)
     } catch (error) {
       console.log(error)
@@ -56,7 +50,6 @@ function App() {
       const stocks_info = stockData.reduce((stocks_info, stock) => [...stocks_info, [stock["name"], stock["numshares"]]],[])
       console.log(stocks_info);
       return stocks_info
-      // setStockResult(stocks_info);
     } catch (error) {
       console.error(error.message)
     }
@@ -158,6 +151,27 @@ function App() {
     } catch (error) {
       console.error(error.message)
     }
+    // try {
+    //   const newBalance = wallet + (price * numShares);
+    //   if (newBalance >= 0) {
+    //     const walletResponse = await fetch(`http://localhost:5000/wallets/`, {
+    //       method: 'PUT',
+    //       body: JSON.stringify({
+    //         balance: newBalance
+    //       }),
+    //       headers: {
+    //         'Content-Type': "application/json; charset=UTF-8"
+    //       }
+    //     })
+    //     setWallet(newBalance);
+    //   } else {
+    //     console.log("You no longer have balance, would you like to restart?");
+    //     alert("You no longer have balance, would you like to restart?");
+    //   }
+    // }
+    // catch (error) {
+    //   console.log(error.message)
+    // }
   }
 
   return (
