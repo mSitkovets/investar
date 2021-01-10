@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-import logo from './logo.png';	
+import logo from './logo.png';
 import yourstocks from './yourstocks.svg';
 import Summary from './Summary.js';
 import StockSummary from './StockSummary.js';
-import giveaway from './giveaway.svg';	
+import giveaway from './giveaway.svg';
 import logotype from './logotype.png';
 
 import Nav from './Nav.js';
@@ -206,7 +206,7 @@ function App() {
     catch (error) {
       console.log(error.message)
     }
-    
+
   }
 
   const getProfit = async (apiResult) => {
@@ -214,7 +214,9 @@ function App() {
       const prevDayBalanceResponse = await fetch(`http://localhost:5000/portfolios`);
       const prevDayBalance = await prevDayBalanceResponse.json();
       console.log(prevDayBalance)
-      currentBalance = wallet;
+      const walletResponse = await fetch("http://localhost:5000/wallets")
+      const walletdata = await walletResponse.json();
+      currentBalance = walletdata.rows[0].balance;
       console.log('1.', currentBalance)
       console.log(apiResult);
       console.log(userStocks);
@@ -238,15 +240,15 @@ function App() {
   return (
     <>{stockResult && <div className="App">
       <Nav />
-      <Education/>
-      
+      <Education />
+
       <Container>
         <Row>
           <Col><h2>Hello, fellow star! 👋</h2></Col>
         </Row>
       </Container>
 
-      <Summary wallet={wallet} profit = {todayProfit}/>
+      <Summary wallet={wallet} profit={todayProfit} />
 
       <Container>
         <Row>
@@ -257,8 +259,8 @@ function App() {
                 console.log(stock)
                 return (
                   <div key={index}>
-                     <p class="ticker">${stock[0]} {stock[1]} shares</p>
-                     <p class="update">You bought at $400. It is now <b>$700</b>!</p>
+                    <p class="ticker">${stock[0]} {stock[1]} shares</p>
+                    <p class="update">You bought at $400. It is now <b>$700</b>!</p>
                   </div>
                 )
               })}
@@ -267,7 +269,7 @@ function App() {
 
           <Col className="buySummary"><img src={buy} />
             <h3>Buy</h3>
-          <p>You have a ${wallet} balance. If you want more money, you can sell some shares!</p>
+            <p>You have a ${wallet} balance. If you want more money, you can sell some shares!</p>
             <ul>
               {stockResult.map((stockData, index) => {
                 let name = `${stockData.symbol}(${stockData.longName})`
@@ -285,15 +287,15 @@ function App() {
 
           <Col className="sellSummary"><img src={sell} />
             <h3>Sell</h3>
-          <p>Want to lock-in your profit? Or not feeling super hopeful about a company? Then sell!</p>
+            <p>Want to lock-in your profit? Or not feeling super hopeful about a company? Then sell!</p>
             <ul>
               {userStocks.map((stock, index) => {
                 console.log(stock)
                 return (
                   <div key={index}>
-                     <p class="ticker">${stock[0]}</p>
-                     <p class="ticker">{stock[1]} </p>
-                    <Button  bsPrefix="sellButton" onClick={() => { sellStockHandler(stock[0], stock[1]) }}>Sell!</Button>
+                    <p class="ticker">${stock[0]}</p>
+                    <p class="ticker">{stock[1]} </p>
+                    <Button bsPrefix="sellButton" onClick={() => { sellStockHandler(stock[0], stock[1]) }}>Sell!</Button>
                   </div>
                 )
               })}
