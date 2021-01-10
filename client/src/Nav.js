@@ -7,9 +7,9 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 function Nav(){
     return(
-        <Navbar bg="light" variant="light">
+        <div bg="light" variant="light">
             <img src={logotype} width="20%" alt="Investar logo"/>
-        </Navbar>
+        </div>
     )
 }
 

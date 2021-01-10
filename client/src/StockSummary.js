@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 function StockSummary(){
     return(
-        <Col className="stockSummary"><img src={yourstocks} class="img" width="60%"/><h3>Your stocks!</h3>
+        <div className="stockSummary"><img src={yourstocks} class="img" width="60%"/><h3>Your stocks!</h3>
           <p class="ticker">$TSLA (Tesla) &nbsp; 15 shares</p>
           <p class="update">You bought at $400. It is now <b>$700</b>!</p>
 
@@ -23,7 +23,7 @@ function StockSummary(){
           <p class="ticker">$ACN (Accenture) &nbsp; 1 shares</p>
           <p class="update">You bought at $128. It is now <b>$270</b>!</p>
           
-          </Col>
+          </div>
 
     )
 }
