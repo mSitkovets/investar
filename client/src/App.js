@@ -13,7 +13,11 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 function App() {
   const [stockResult, setStockResult] = useState();
+<<<<<<< HEAD
   const [userStocks, setUserStocks] = useState([]);
+=======
+  const [wallet, setWallet] = useState();
+>>>>>>> b869fb7108c87522a8cbb4100342609b167635e0
   useEffect(() => {
     getData();
     async function fetchStocks(){
@@ -33,6 +37,12 @@ function App() {
         }
       })
       const data = await response.json();
+<<<<<<< HEAD
+=======
+      const walletResponse = await fetch("http://localhost:5000/wallets")
+      const walletdata = await walletResponse.json();
+      setWallet(walletdata.rows[0].balance)
+>>>>>>> b869fb7108c87522a8cbb4100342609b167635e0
       setStockResult(data.quoteResponse.result)
     } catch (error) {
       console.log(error)
@@ -100,21 +110,34 @@ function App() {
       }
 
       try {
-        const stockResponse = await fetch(`http://localhost:5000/wallets/`, {
-          method: 'PUT',
-
-        })
-      } catch (error) {
+        const newBalance = wallet - price;
+        if (newBalance >= 0) {
+          const walletResponse = await fetch(`http://localhost:5000/wallets/`, {
+            method: 'PUT',
+            body: JSON.stringify({
+              balance: newBalance
+            }),
+            headers: {
+              'Content-Type': "application/json; charset=UTF-8"
+            }
+          })
+          setWallet(newBalance);
+        } else {
+          console.log("You no longer have balance, would you like to restart?");
+          alert("You no longer have balance, would you like to restart?");
+        }
+      }
+      catch (error) {
         console.log(error.message)
       }
+
     } catch (error) {
       console.error(error.message)
     }
-    try {
+    // try {
+    // } catch (error) {
 
-    } catch (error) {
-
-    }
+    // }
   }
 
   const sellStockHandler = async (name, numShares) => {
@@ -160,7 +183,7 @@ function App() {
           <Col xs={4}><img src={giveaway} class="celebrating" alt="Illustration of girl celebrating!" /></Col>
           <Col class="total">
 
-            <p>Your stock portfolio total is <br></br><h1>$890</h1></p>
+            <p>Your stock portfolio total is <br></br><h1>${wallet}</h1></p>
           </Col>
           <Col class="profit">
             <p>Today you made <br></br><h1>$120</h1></p>
