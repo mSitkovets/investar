@@ -17,7 +17,7 @@ function App() {
   const [wallet, setWallet] = useState();
   useEffect(() => {
     getData();
-    async function fetchStocks(){
+    async function fetchStocks() {
       const stocks = await getStocks();
       setUserStocks(stocks)
     }
@@ -47,7 +47,7 @@ function App() {
     try {
       const stockResponse = await fetch("http://localhost:5000/stocks/")
       const stockData = await stockResponse.json();
-      const stocks_info = stockData.reduce((stocks_info, stock) => [...stocks_info, [stock["name"], stock["numshares"]]],[])
+      const stocks_info = stockData.reduce((stocks_info, stock) => [...stocks_info, [stock["name"], stock["numshares"]]], [])
       console.log(stocks_info);
       return stocks_info
     } catch (error) {
@@ -103,7 +103,7 @@ function App() {
       }
 
       try {
-        const newBalance = wallet - price;
+        const newBalance = Math.round((wallet - 5 * price) * 100) / 100;
         if (newBalance >= 0) {
           const walletResponse = await fetch(`http://localhost:5000/wallets/`, {
             method: 'PUT',
@@ -127,14 +127,21 @@ function App() {
     } catch (error) {
       console.error(error.message)
     }
-    // try {
-    // } catch (error) {
-
-    // }
   }
 
   const sellStockHandler = async (name, numShares) => {
     try {
+      const companySymbol = name.substr(0, name.indexOf('('));
+      const apiResponse = await fetch(`https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-quotes?region=CA&symbols=${companySymbol}`, {
+        method: 'GET',
+        headers: {
+          "x-rapidapi-key": "bf8b1d549amshedfc95df35cd085p1e256bjsn56aa957d4900",
+          "x-rapidapi-host": "apidojo-yahoo-finance-v1.p.rapidapi.com"
+        }
+      })
+      const data = await apiResponse.json();
+      let companyValue = data.quoteResponse.result[0].regularMarketPrice;
+
       const stockResponse = await fetch(`http://localhost:5000/stocks/sell`, {
         method: 'PUT',
         body: JSON.stringify({
@@ -218,14 +225,14 @@ function App() {
             <ul>
               {userStocks.map((stock, index) => {
                 console.log(stock)
-                  return(
-                    <div key={index}>
-                      <li>${stock[0]} {stock[1]} shares</li>
-                      <p>message</p>
-                    </div>
-                  )
-                })}
-              </ul>
+                return (
+                  <div key={index}>
+                    <li>${stock[0]} {stock[1]} shares</li>
+                    <p>message</p>
+                  </div>
+                )
+              })}
+            </ul>
           </Col>
 
           <Col><img src={buy} />Buy
@@ -233,7 +240,7 @@ function App() {
             <ul>
               {stockResult.map((stockData, index) => {
                 let name = `${stockData.symbol}(${stockData.longName})`
-                return(
+                return (
                   <div key={index}>
                     <li>${name}</li>
                     <li>${stockData.regularMarketPrice} </li>
@@ -248,9 +255,9 @@ function App() {
           <Col><img src={sell} />Sell
           <p>Want to lock-in your profit? Or not feeling super hopeful about a company? Then sell!</p>
             <ul>
-            {userStocks.map((stock, index) => {
-              console.log(stock)
-                return(
+              {userStocks.map((stock, index) => {
+                console.log(stock)
+                return (
                   <div key={index}>
                     <li>${stock[0]}</li>
                     <li>${stock[1]} </li>

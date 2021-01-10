@@ -18,7 +18,6 @@ router.get("/:name", async (req, res) => {
 // buy the stock (update)
 router.put("/buy", async (req, res) => {
     try {
-        console.log("put")
         const name = req.body.name;
         const numShares = parseInt(req.body.numShares); // oldNumShares + newNumShares (can calculate this after we do fetch)
         const boughtValue = req.body.boughtValue;
